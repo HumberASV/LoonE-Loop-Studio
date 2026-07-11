@@ -1,0 +1,314 @@
+:root {
+  --theme-bg: #eef1fb;
+  --theme-primary: #140f66;
+  --theme-secondary: #4c5480;
+  --theme-accent: #ffcc33;
+  --theme-wave: #1f06a9;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--theme-bg);
+  color: var(--theme-primary);
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.studio {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 28px 16px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.studio > header {
+  text-align: center;
+}
+
+.studio > header h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+}
+
+.studio > header p {
+  margin: 4px 0 0;
+  color: var(--theme-secondary);
+  font-size: 13px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tabs button {
+  padding: 8px 18px;
+  font-size: 14px;
+  border: 1px solid var(--theme-secondary);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--theme-primary);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tabs button.active {
+  background: var(--theme-wave);
+  border-color: var(--theme-wave);
+  color: #fff;
+}
+
+/* ---- stage: fixed 1080×1080 canvas, scaled down responsively ---- */
+
+.stage {
+  position: relative;
+  width: min(88vmin, 720px);
+  container-type: inline-size;
+}
+
+.stage canvas {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  border-radius: 14px;
+  box-shadow: 0 14px 44px rgb(0 0 0 / 0.28);
+}
+
+/* ---- DOM text overlay (not part of the recorded canvas) ---- */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.overlay h1 {
+  margin: 0;
+  transform: translateY(-8cqw);
+  font-size: 7.4cqw;
+  font-weight: 800;
+  letter-spacing: 0.25em;
+  text-indent: 0.25em; /* re-centers text that letter-spacing skews left */
+  text-align: center;
+  white-space: pre-line;
+  color: var(--theme-primary);
+}
+
+.overlay--loading h1 {
+  animation: loading-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.overlay--glitch h1 {
+  font-family: Consolas, "Courier New", monospace;
+  animation: glitch-flicker 3.2s steps(1, end) infinite;
+}
+
+@keyframes glitch-flicker {
+  0%,
+  91% {
+    text-shadow: none;
+    transform: translate(0, -8cqw);
+  }
+  92% {
+    text-shadow: 0.3cqw 0 #ff00ea, -0.3cqw 0 #00fff2;
+    transform: translate(0.2cqw, -8cqw);
+  }
+  95% {
+    text-shadow: -0.45cqw 0 #ff00ea, 0.45cqw 0 #00fff2;
+    transform: translate(-0.3cqw, -8cqw);
+  }
+  98% {
+    text-shadow: 0.25cqw 0 #ff00ea, -0.25cqw 0 #00fff2;
+    transform: translate(0, -8cqw);
+  }
+}
+
+/* ---- controls ---- */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 14px 22px;
+  font-size: 13.5px;
+  color: var(--theme-secondary);
+}
+
+.controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.controls select {
+  font: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--theme-secondary);
+  background: transparent;
+  color: var(--theme-primary);
+}
+
+.controls button {
+  padding: 8px 16px;
+  font-size: 13.5px;
+  border: none;
+  border-radius: 10px;
+  background: var(--theme-accent);
+  color: #1a1a1a;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---- settings form: edit a draft, submit to re-render ---- */
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 14px;
+  width: 100%;
+  max-width: 860px;
+  font-size: 13.5px;
+  color: var(--theme-secondary);
+}
+
+.settings fieldset {
+  flex: 1 1 220px;
+  margin: 0;
+  padding: 12px 16px 14px;
+  border: 1px solid var(--theme-secondary);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings legend {
+  padding: 0 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-secondary);
+}
+
+.settings label {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.settings select,
+.settings input[type="number"] {
+  font: inherit;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--theme-secondary);
+  background: transparent;
+  color: var(--theme-primary);
+}
+
+.settings input[type="number"] {
+  width: 5.5em;
+}
+
+.settings input[type="range"] {
+  flex: 1 1 90px;
+  accent-color: var(--theme-wave);
+}
+
+.apply-row {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.apply-row button {
+  padding: 9px 18px;
+  font-size: 13.5px;
+  border: none;
+  border-radius: 10px;
+  background: var(--theme-secondary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.apply-row button.apply {
+  background: var(--theme-accent);
+  color: #1a1a1a;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent) 35%, transparent);
+}
+
+.edit-settings-link {
+  color: var(--theme-secondary);
+  font-size: 13.5px;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.edit-settings-link:hover {
+  border-color: var(--theme-secondary);
+}
+
+.field-hint {
+  margin: -4px 0 0;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--theme-secondary);
+  opacity: 0.85;
+}
+
+/* ---- config-page live preview (plain canvas, no p5/capture involved) ---- */
+
+.config-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.config-preview canvas {
+  max-width: min(88vmin, 420px);
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  box-shadow: 0 14px 44px rgb(0 0 0 / 0.28);
+}
+
+.config-preview__hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--theme-secondary);
+  opacity: 0.8;
+}
