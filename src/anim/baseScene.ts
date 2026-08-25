@@ -18,6 +18,9 @@ export class BaseScene {
   /** Mirror the boat art horizontally. SceneRuntime owns this — it also
    *  toggles it live when the bounce mode turns the boat around. */
   flipped = sceneConfig.flipBoat;
+  /** Draw the boat at all. The rig keeps stepping either way, so toggling
+   *  this live never re-drops a settled boat back onto the water. */
+  boatVisible = sceneConfig.showBoat;
   private boatImg: p5.Image | null = null;
   private sky: p5.Graphics | null = null;
   private skyThemeName = "";
@@ -48,7 +51,7 @@ export class BaseScene {
     this.drawSky(theme);
     this.drawWaveLayer(frameIndex, theme, 0);
     this.drawWaveLayer(frameIndex, theme, 1);
-    this.drawBoat(theme);
+    if (this.boatVisible) this.drawBoat(theme);
     this.drawWaveLayer(frameIndex, theme, 2);
     this.drawWaveLayer(frameIndex, theme, 3);
   }

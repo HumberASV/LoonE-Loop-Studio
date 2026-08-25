@@ -17,6 +17,8 @@ export class SceneRuntime {
   theme: ColorTheme = sceneConfig.theme;
   autoCapture = sceneConfig.autoCapture;
   bakeLabel = sceneConfig.bakeLabel;
+  showLabel = sceneConfig.showLabel;
+  showBoat = sceneConfig.showBoat;
   label: string;
   canvasWidth: number = 1080;
   canvasHeight: number = 1080;
@@ -40,6 +42,11 @@ export class SceneRuntime {
       if (props.theme) this.theme = props.theme;
       if (typeof props.autoCapture === "boolean") this.autoCapture = props.autoCapture;
       if (typeof props.bakeLabel === "boolean") this.bakeLabel = props.bakeLabel;
+      if (typeof props.showLabel === "boolean") this.showLabel = props.showLabel;
+      if (typeof props.showBoat === "boolean") {
+        this.showBoat = props.showBoat;
+        if (this.scene) this.scene.boatVisible = props.showBoat;
+      }
       if (typeof props.label === "string") this.label = props.label;
       if (typeof props.flipBoat === "boolean" && this.scene) this.scene.flipped = props.flipBoat;
       if (typeof props.boatXFrac === "number") BOAT.xFrac = props.boatXFrac;
@@ -65,6 +72,8 @@ export class SceneRuntime {
     this.theme = sceneConfig.theme;
     this.autoCapture = sceneConfig.autoCapture;
     this.bakeLabel = sceneConfig.bakeLabel;
+    this.showLabel = sceneConfig.showLabel;
+    this.showBoat = sceneConfig.showBoat;
     BOAT.xFrac = sceneConfig.boatXFrac;
     this.moveAnimate = sceneConfig.moveAnimate;
     this.moveDirection = sceneConfig.moveDirection;
@@ -73,6 +82,7 @@ export class SceneRuntime {
     this.recordMode = sceneConfig.recordMode;
     this.scene = new BaseScene(p);
     this.scene.flipped = sceneConfig.flipBoat;
+    this.scene.boatVisible = this.showBoat;
     this.scene.loadAssets();
   }
 
@@ -98,8 +108,15 @@ export class SceneRuntime {
         // Seamless-loop sailing; see anim/boatMotion.ts for the loop math.
         const didExitFrame = advanceWrapMotion(this.moveDirection, this.moveSpeed);
         // "Until exit" only applies with wrap sailing on — bounce mode never
-        // truly leaves frame, so it's always treated as "standard" there.
-        if (this.recordMode === "untilExit" && didExitFrame && !this.captureArmed) {
+        // truly leaves frame, so it's always treated as "standard" there. A
+        // hidden boat has no visible exit to record up to, so it's "standard"
+        // there too rather than cutting the take on an invisible event.
+        if (
+          this.recordMode === "untilExit" &&
+          this.showBoat &&
+          didExitFrame &&
+          !this.captureArmed
+        ) {
           stopLoopCapture();
         }
       } else {
@@ -120,7 +137,7 @@ export class SceneRuntime {
 
     this.scene.step(frameIndex);
     this.scene.render(frameIndex, this.theme);
-    if (this.bakeLabel) this.drawBakedLabel();
+    if (this.showLabel && this.bakeLabel) this.drawBakedLabel();
 
     return frameIndex % LOOP_FRAMES;
   }

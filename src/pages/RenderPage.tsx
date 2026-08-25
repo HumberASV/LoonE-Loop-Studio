@@ -42,9 +42,12 @@ export default function RenderPage() {
   // after this header's JSX expressions are evaluated).
   const loopFrames = Math.round(settings.loopSeconds * FPS);
   // Mirrors the same guard sceneRuntime.ts applies at capture time: "until
-  // exit" only actually takes effect with wrap-mode boat motion on.
+  // exit" only actually takes effect with a visible boat in wrap-mode motion.
   const untilExit =
-    settings.recordMode === "untilExit" && settings.moveAnimate && settings.moveWrap;
+    settings.recordMode === "untilExit" &&
+    settings.showBoat &&
+    settings.moveAnimate &&
+    settings.moveWrap;
 
   return (
     <main className="studio">

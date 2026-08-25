@@ -10,9 +10,13 @@ export interface SceneSketchProps extends SketchProps {
   /** Also draw the label inside the canvas so it survives into the GIF
    *  (the DOM overlay is not part of the recorded canvas). */
   bakeLabel: boolean;
+  /** Draw the label at all — false suppresses both the bake and the overlay. */
+  showLabel?: boolean;
   label: string;
   canvasWidth?: number;
   canvasHeight?: number;
+  /** Draw the boat at all — false renders sky + waves only. */
+  showBoat?: boolean;
   flipBoat?: boolean;
   boatScale?: number;
   boatXFrac?: number;
@@ -32,6 +36,8 @@ export const sceneConfig = {
   theme: DEFAULT_THEME,
   autoCapture: false,
   bakeLabel: true,
+  showLabel: true,
+  showBoat: true,
   flipBoat: true,
   boatScale: 1,
   boatXFrac: 0.5,

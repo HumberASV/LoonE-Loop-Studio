@@ -105,14 +105,17 @@ export function ConfigPreview({ draft }: ConfigPreviewProps) {
       }
       ctx.globalAlpha = 1;
 
-      // Boat marker riding the (drawn) wave layer.
-      const boatX = w * previewBoatXFrac(d, frame, loopFrames);
-      const boatY = sineSurfaceY(params, boatX, frame, PREVIEW_BOAT_PARALLAX);
-      const boatSize = Math.max(6, w * 0.05 * d.boatScale);
-      ctx.fillStyle = t.boatHull;
-      ctx.beginPath();
-      ctx.ellipse(boatX, boatY, boatSize, boatSize * 0.6, 0, 0, Math.PI * 2);
-      ctx.fill();
+      // Boat marker riding the (drawn) wave layer — skipped entirely when the
+      // boat is switched off, so the preview shows the same empty sea.
+      if (d.showBoat) {
+        const boatX = w * previewBoatXFrac(d, frame, loopFrames);
+        const boatY = sineSurfaceY(params, boatX, frame, PREVIEW_BOAT_PARALLAX);
+        const boatSize = Math.max(6, w * 0.05 * d.boatScale);
+        ctx.fillStyle = t.boatHull;
+        ctx.beginPath();
+        ctx.ellipse(boatX, boatY, boatSize, boatSize * 0.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
       // Frame outline, so the aspect ratio itself reads clearly.
       ctx.strokeStyle = t.secondary;

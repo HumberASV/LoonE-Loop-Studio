@@ -16,6 +16,8 @@ export interface RenderSettings {
   width: number;
   height: number;
   fixedRatio: boolean;
+  /** Draw the boat at all. Off = empty sea (the wave field on its own). */
+  showBoat: boolean;
   boatScale: number;
   boatXFrac: number;
   flipBoat: boolean;
@@ -23,6 +25,9 @@ export interface RenderSettings {
   moveDirection: number;
   moveSpeed: number;
   moveWrap: boolean;
+  /** Draw the scene label at all. Off = no text anywhere — neither the DOM
+   *  overlay nor the in-canvas bake, whatever bakeLabel says. */
+  showLabel: boolean;
   bakeLabel: boolean;
   autoCapture: boolean;
   /** Wave crest-to-trough height, as a fraction of canvas height. */
@@ -35,8 +40,8 @@ export interface RenderSettings {
   exportQuality: number;
   /** "standard" records a fixed loopSeconds-length loop; "untilExit" stops
    *  the moment the sailing boat first exits the frame. Only meaningful
-   *  when moveAnimate + moveWrap are both on — otherwise treated as
-   *  "standard" at render time (see sceneRuntime.ts). */
+   *  when showBoat + moveAnimate + moveWrap are all on — otherwise treated
+   *  as "standard" at render time (see sceneRuntime.ts). */
   recordMode: RecordMode;
 }
 
@@ -44,6 +49,7 @@ export const DEFAULT_SETTINGS: RenderSettings = {
   width: 1920,
   height: 1080,
   fixedRatio: false,
+  showBoat: true,
   boatScale: 1,
   boatXFrac: 0.5,
   flipBoat: true,
@@ -51,6 +57,7 @@ export const DEFAULT_SETTINGS: RenderSettings = {
   moveDirection: 1,
   moveSpeed: 0.004,
   moveWrap: true,
+  showLabel: true,
   bakeLabel: true,
   autoCapture: false,
   waveAmplitude: 0.039,

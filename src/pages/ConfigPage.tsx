@@ -38,7 +38,8 @@ export default function ConfigPage() {
   const [draft, setDraft] = useState<RenderSettings>(loadDraftSettings);
 
   const crossings = Math.max(1, Math.round(draft.moveSpeed * draft.loopSeconds * FPS));
-  const untilExitAvailable = draft.moveAnimate && draft.moveWrap;
+  // Same three conditions sceneRuntime.ts re-checks at capture time.
+  const untilExitAvailable = draft.showBoat && draft.moveAnimate && draft.moveWrap;
 
   /** Edit the draft only — the preview re-renders every frame anyway (it
    *  has its own rAF loop), so no extra plumbing is needed for "live". */
@@ -186,78 +187,95 @@ export default function ConfigPage() {
         <fieldset>
           <legend>Boat</legend>
           <label>
-            Size: {Math.round(draft.boatScale * 100)}%
-            <input
-              type="range"
-              min={0.5}
-              max={2}
-              step={0.05}
-              value={draft.boatScale}
-              onChange={(e) => edit({ boatScale: e.target.valueAsNumber })}
-            />
-          </label>
-          <label style={{ opacity: draft.moveAnimate ? 0.5 : 1 }}>
-            Position: {Math.round(draft.boatXFrac * 100)}%
-            <input
-              type="range"
-              min={0.1}
-              max={0.9}
-              step={0.01}
-              value={draft.boatXFrac}
-              disabled={draft.moveAnimate}
-              onChange={(e) => edit({ boatXFrac: e.target.valueAsNumber })}
-            />
-          </label>
-          <label>
             <input
               type="checkbox"
-              checked={draft.flipBoat}
-              onChange={(e) => edit({ flipBoat: e.target.checked })}
+              checked={draft.showBoat}
+              onChange={(e) => edit({ showBoat: e.target.checked })}
             />{" "}
-            ↔ Flip boat
+            Show boat
           </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={draft.moveAnimate}
-              onChange={(e) => edit({ moveAnimate: e.target.checked })}
-            />{" "}
-            Animate boat movement
-          </label>
-          {draft.moveAnimate && (
+          {!draft.showBoat && (
+            <p className="field-hint">
+              Boat hidden — the loop renders sky and waves only.
+            </p>
+          )}
+          {draft.showBoat && (
             <>
               <label>
-                Direction{" "}
-                <select
-                  value={draft.moveDirection}
-                  onChange={(e) => edit({ moveDirection: parseInt(e.target.value) })}
-                >
-                  <option value={1}>Right</option>
-                  <option value={-1}>Left</option>
-                </select>
-              </label>
-              <label>
-                Speed:{" "}
-                {draft.moveWrap
-                  ? `${crossings}× across per loop`
-                  : Math.round(draft.moveSpeed * 1000)}
+                Size: {Math.round(draft.boatScale * 100)}%
                 <input
                   type="range"
-                  min={0.001}
-                  max={0.015}
-                  step={0.001}
-                  value={draft.moveSpeed}
-                  onChange={(e) => edit({ moveSpeed: e.target.valueAsNumber })}
+                  min={0.5}
+                  max={2}
+                  step={0.05}
+                  value={draft.boatScale}
+                  onChange={(e) => edit({ boatScale: e.target.valueAsNumber })}
+                />
+              </label>
+              <label style={{ opacity: draft.moveAnimate ? 0.5 : 1 }}>
+                Position: {Math.round(draft.boatXFrac * 100)}%
+                <input
+                  type="range"
+                  min={0.1}
+                  max={0.9}
+                  step={0.01}
+                  value={draft.boatXFrac}
+                  disabled={draft.moveAnimate}
+                  onChange={(e) => edit({ boatXFrac: e.target.valueAsNumber })}
                 />
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={draft.moveWrap}
-                  onChange={(e) => edit({ moveWrap: e.target.checked })}
+                  checked={draft.flipBoat}
+                  onChange={(e) => edit({ flipBoat: e.target.checked })}
                 />{" "}
-                Wrap at ends — seamless loop (uncheck to bounce)
+                ↔ Flip boat
               </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={draft.moveAnimate}
+                  onChange={(e) => edit({ moveAnimate: e.target.checked })}
+                />{" "}
+                Animate boat movement
+              </label>
+              {draft.moveAnimate && (
+                <>
+                  <label>
+                    Direction{" "}
+                    <select
+                      value={draft.moveDirection}
+                      onChange={(e) => edit({ moveDirection: parseInt(e.target.value) })}
+                    >
+                      <option value={1}>Right</option>
+                      <option value={-1}>Left</option>
+                    </select>
+                  </label>
+                  <label>
+                    Speed:{" "}
+                    {draft.moveWrap
+                      ? `${crossings}× across per loop`
+                      : Math.round(draft.moveSpeed * 1000)}
+                    <input
+                      type="range"
+                      min={0.001}
+                      max={0.015}
+                      step={0.001}
+                      value={draft.moveSpeed}
+                      onChange={(e) => edit({ moveSpeed: e.target.valueAsNumber })}
+                    />
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={draft.moveWrap}
+                      onChange={(e) => edit({ moveWrap: e.target.checked })}
+                    />{" "}
+                    Wrap at ends — seamless loop (uncheck to bounce)
+                  </label>
+                </>
+              )}
             </>
           )}
         </fieldset>
@@ -267,11 +285,25 @@ export default function ConfigPage() {
           <label>
             <input
               type="checkbox"
-              checked={draft.bakeLabel}
-              onChange={(e) => edit({ bakeLabel: e.target.checked })}
+              checked={draft.showLabel}
+              onChange={(e) => edit({ showLabel: e.target.checked })}
             />{" "}
-            Bake label into canvas
+            Show label text
           </label>
+          {draft.showLabel ? (
+            <label>
+              <input
+                type="checkbox"
+                checked={draft.bakeLabel}
+                onChange={(e) => edit({ bakeLabel: e.target.checked })}
+              />{" "}
+              Bake label into canvas
+            </label>
+          ) : (
+            <p className="field-hint">
+              Text hidden — nothing is drawn on the canvas or overlaid on it.
+            </p>
+          )}
           <label>
             <input
               type="checkbox"
@@ -314,7 +346,8 @@ export default function ConfigPage() {
           </label>
           {!untilExitAvailable && (
             <p className="field-hint">
-              "Until boat exits frame" needs wrap-mode boat movement enabled above.
+              "Until boat exits frame" needs a visible boat with wrap-mode
+              movement enabled above.
             </p>
           )}
         </fieldset>

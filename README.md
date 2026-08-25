@@ -47,6 +47,8 @@ expensive. `/config` also lands here (redirects to `/`).
   1–6.
 
 **Boat**
+- **Show boat** — uncheck for an empty sea: sky and waves only. The rest of
+  the boat controls hide while it's off.
 - **Size** — 50–200% scale.
 - **Position** — resting X position (10–90% across), disabled while
   animating.
@@ -61,6 +63,8 @@ expensive. `/config` also lands here (redirects to `/`).
     export).
 
 **Output**
+- **Show label text** — uncheck for no text at all: neither the baked canvas
+  text nor the DOM overlay is drawn, on either scene.
 - **Bake label into canvas** — draws "LOADING..." / "TECHNICAL DIFFICULTY"
   into the exported pixels. Off by default means the DOM text overlay you
   see on `/render` is *not* part of the recording.
@@ -69,7 +73,7 @@ expensive. `/config` also lands here (redirects to `/`).
   a project with it on) — recording only re-arms when you explicitly check
   it and hit Apply, never as a side effect of just opening the page.
 - **Export format** — GIF or WebM. **Quality** — 10–100%.
-- **Record mode** (only selectable with wrap-mode boat animation on):
+- **Record mode** (only selectable with a visible boat in wrap-mode animation):
   - **Perfect loop** — captures exactly `loopSeconds` worth of frames.
   - **Until boat exits frame** — stops the moment the boat first sails
     fully off-screen, typically well under a full loop. Good for a

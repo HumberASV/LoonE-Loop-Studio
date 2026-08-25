@@ -21,6 +21,7 @@ export function SceneStage({ sketch, label, variant, runId, settings }: SceneSta
   const {
     width,
     height,
+    showBoat,
     boatScale,
     boatXFrac,
     flipBoat,
@@ -28,6 +29,7 @@ export function SceneStage({ sketch, label, variant, runId, settings }: SceneSta
     moveDirection,
     moveSpeed,
     moveWrap,
+    showLabel,
     bakeLabel,
     autoCapture,
     waveAmplitude,
@@ -56,6 +58,8 @@ export function SceneStage({ sketch, label, variant, runId, settings }: SceneSta
   sceneConfig.theme = theme;
   sceneConfig.autoCapture = autoCapture;
   sceneConfig.bakeLabel = bakeLabel;
+  sceneConfig.showLabel = showLabel;
+  sceneConfig.showBoat = showBoat;
   sceneConfig.flipBoat = flipBoat;
   sceneConfig.boatScale = boatScale;
   sceneConfig.boatXFrac = boatXFrac;
@@ -95,9 +99,11 @@ export function SceneStage({ sketch, label, variant, runId, settings }: SceneSta
         theme={theme}
         autoCapture={autoCapture}
         bakeLabel={bakeLabel}
+        showLabel={showLabel}
         label={label}
         canvasWidth={width}
         canvasHeight={height}
+        showBoat={showBoat}
         flipBoat={flipBoat}
         boatScale={boatScale}
         boatXFrac={boatXFrac}
@@ -107,13 +113,15 @@ export function SceneStage({ sketch, label, variant, runId, settings }: SceneSta
         moveWrap={moveWrap}
         recordMode={recordMode}
       />
-      <div
-        className={`overlay overlay--${variant}`}
-        aria-hidden="true"
-        style={{ opacity: bakeLabel ? 0 : 1 }}
-      >
-        <h1 data-text={label}>{label}</h1>
-      </div>
+      {showLabel && (
+        <div
+          className={`overlay overlay--${variant}`}
+          aria-hidden="true"
+          style={{ opacity: bakeLabel ? 0 : 1 }}
+        >
+          <h1 data-text={label}>{label}</h1>
+        </div>
+      )}
     </div>
   );
 }
