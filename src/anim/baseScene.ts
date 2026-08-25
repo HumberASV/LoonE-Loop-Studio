@@ -79,8 +79,10 @@ export class BaseScene {
   private drawWaveLayer(frameIndex: number, theme: ColorTheme, layer: number): void {
     const { p } = this;
     const frac = WAVE.parallax[layer] ?? 0;
-    const fill = p.color(theme.waveFill);
-    fill.setAlpha(255 * (theme.waveOpacities[layer as 0 | 1 | 2 | 3] ?? 0.4));
+    const layerIndex = layer as 0 | 1 | 2 | 3;
+    // Themes are single-hue unless they opt into per-layer colors.
+    const fill = p.color(theme.waveFills?.[layerIndex] ?? theme.waveFill);
+    fill.setAlpha(255 * (theme.waveOpacities[layerIndex] ?? 0.4));
 
     p.noStroke();
     p.fill(fill);

@@ -16,6 +16,15 @@ const MAX_PREVIEW = 420;
  *  to keep this component fully decoupled from anim/constants.ts. */
 const PREVIEW_BOAT_PARALLAX = 0.25;
 
+/** The two representative wave layers the preview draws, as
+ *  [WAVE.parallax index, parallax fraction] — one behind the boat, one in
+ *  front. The index selects the theme's per-layer color and alpha; the
+ *  fraction is a local copy of WAVE.parallax for the same reason as above. */
+const PREVIEW_WAVE_LAYERS = [
+  [0, 0.1],
+  [2, 0.35],
+] as const satisfies ReadonlyArray<readonly [0 | 1 | 2 | 3, number]>;
+
 /** Illustrative-only boat sail position — doesn't need to bit-match the
  *  real physics/wrap-padding math in anim/boatMotion.ts, just convey it. */
 function previewBoatXFrac(draft: RenderSettings, frame: number, loopFrames: number): number {
@@ -90,8 +99,10 @@ export function ConfigPreview({ draft }: ConfigPreviewProps) {
       ctx.fillRect(0, 0, w, h);
 
       // Two wave layers (back + front), matching the real render's parallax
-      // ordering closely enough to be representative.
-      for (const frac of [0.1, 0.35]) {
+      // ordering closely enough to be representative. Color and alpha come
+      // from the theme by layer index, so a per-layer theme previews as it
+      // will render — the fracs stay local constants (see header comment).
+      for (const [layer, frac] of PREVIEW_WAVE_LAYERS) {
         ctx.beginPath();
         ctx.moveTo(0, h);
         for (let x = 0; x <= w; x += 4) {
@@ -99,8 +110,8 @@ export function ConfigPreview({ draft }: ConfigPreviewProps) {
         }
         ctx.lineTo(w, h);
         ctx.closePath();
-        ctx.fillStyle = t.waveFill;
-        ctx.globalAlpha = frac === 0.1 ? 0.8 : 0.4;
+        ctx.fillStyle = t.waveFills?.[layer] ?? t.waveFill;
+        ctx.globalAlpha = t.waveOpacities[layer];
         ctx.fill();
       }
       ctx.globalAlpha = 1;

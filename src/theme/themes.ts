@@ -20,6 +20,9 @@ export interface ColorTheme {
   accent: string;
   /** Base color shared by all four wave layers. */
   waveFill: string;
+  /** Per-layer wave color, same order as WAVE.parallax (back → front).
+   *  Omit for a single-hue theme — every layer then uses waveFill. */
+  waveFills?: [string, string, string, string];
   /** Per-layer alpha, same order as WAVE.parallax (back → front). */
   waveOpacities: [number, number, number, number];
   /** Boat body base color — the LoonE SVG's gold ramp is regenerated from
@@ -84,6 +87,25 @@ export const THEMES = {
     waveOpacities: [0.8, 0.4, 0.4, 0.4],
     boatHull: "#e8b84a", // moonlit brass
     boatDetail: "#8b93b8",
+  },
+  // loading-animation.svg's own :root palette. Its water is a stack, not a
+  // wash: one opaque crest-blue body with translucent purple foam bands over
+  // it — hence waveFills. Boat tokens are the ramp midpoints boatArt.ts
+  // shades by 0, so the recolor reproduces the SVG's original gold + gray.
+  porthole: {
+    name: "LoonE Porthole",
+    background: "#00435c", // --color-water
+    skyTop: "#00364a", // --color-frame (deepest, at the top)
+    skyBottom: "#00435c", // --color-water, at the waterline
+    primary: "#ffffff", // --color-text / --color-outline
+    secondary: "#10beff", // --color-wave-crest
+    accent: "#ffcc00", // --color-hull-gold
+    waveFill: "#a053ec", // --color-wave-foam (fallback / dominant band)
+    waveFills: ["#10beff", "#a053ec", "#a053ec", "#a053ec"],
+    // 0.44 ≈ the SVG's foam group opacity="0.43734643".
+    waveOpacities: [1, 0.44, 0.44, 0.44],
+    boatHull: "#ffd42a", // --color-hull-mid
+    boatDetail: "#b3b3b3", // --color-metal-mid
   },
   broadcast: {
     name: "Broadcast",

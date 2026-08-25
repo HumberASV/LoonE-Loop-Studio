@@ -133,11 +133,18 @@ if submerged, apply an upward force `depth × buoyancy` and scale velocity by
 
 ## Themes
 
-Five built-in palettes (`src/theme/themes.ts`), switchable live on `/` —
+Six built-in palettes (`src/theme/themes.ts`), switchable live on `/` —
 including two derived from the HumberASV brand guide (`brandLight` /
 `brandDark`). Every color in the app — sky, wave layers, boat hull/detail,
 UI chrome — comes from the active `ColorTheme`, so a palette swap recolors
 everything, including a live-regenerated boat SVG (`src/anim/boatArt.ts`).
+
+Most palettes are single-hue: one `waveFill` at four per-layer alphas. A
+theme can instead set the optional `waveFills` tuple to color each parallax
+layer separately (back → front). **LoonE Porthole** is the one that does —
+it mirrors `loading-animation.svg`, whose water is a stack rather than a
+wash: an opaque crest-blue body (`#10beff`) with translucent purple foam
+bands (`#a053ec`) layered over it, two of them in front of the boat.
 
 ## Asset
 

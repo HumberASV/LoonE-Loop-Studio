@@ -36,7 +36,9 @@ function loadThemeName(): ThemeName {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [themeName, setThemeName] = useState<ThemeName>(loadThemeName);
-  const theme = THEMES[themeName];
+  // Annotated, not inferred: `satisfies` keeps THEMES' per-key literal types,
+  // and the union of those has no `waveFills` on the themes that omit it.
+  const theme: ColorTheme = THEMES[themeName];
 
   // Persist the selected theme so it survives a reload.
   useEffect(() => {
@@ -55,7 +57,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.setProperty("--theme-primary", theme.primary);
     root.setProperty("--theme-secondary", theme.secondary);
     root.setProperty("--theme-accent", theme.accent);
-    root.setProperty("--theme-wave", theme.waveFill);
+    // The back/body layer is the dominant water color for per-layer themes;
+    // the bands over it are translucent and make washed-out chrome.
+    root.setProperty("--theme-wave", theme.waveFills?.[0] ?? theme.waveFill);
   }, [theme]);
 
   const value = useMemo(
